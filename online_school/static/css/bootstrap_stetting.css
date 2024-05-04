@@ -1,0 +1,22 @@
+
+#button {
+    background-color: transparent;
+    border-color: #ffffff;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+}
+
+#button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+#button:focus,
+#button:active {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff;
+    box-shadow: none !important;
+}
+

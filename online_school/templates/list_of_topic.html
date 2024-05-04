@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список тем</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_page.css') }}">
+    <style>
+        button[type="button"] {
+            background-color: transparent;
+            border-color: #000000;
+            color: #000000;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+        }
+
+        button[type="button"]:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        button[type="button"]:focus,
+        button[type="button"]:active {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffffff;
+            box-shadow: none !important;
+        }
+
+        button[type="button"]:not(:focus):not(:active) {
+            background-color: transparent !important;
+            color: #000000 !important;
+        }
+
+
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Список тем</h1>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">На главную</a>
+    <ul>
+        {% for topic in topics %}
+        <li><a href="{{ url_for('topic_page', topic_id=topic._id) }}">{{ topic.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <div class="list-group">
+        <!-- Кнопки-темы будут динамически созданы JavaScript-кодом -->
+    </div>
+</div>
+
+<!-- Модальное окно для формы входа -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма входа -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="Введите email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Введите пароль">
+                    </div>
+                    <div class="text-center">
+                        <!-- Кнопка для переключения на форму регистрации -->
+                        <button type="button" class="btn btn-link" id="showRegistrationForm">Зарегистрироваться</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Войти</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для формы регистрации -->
+<div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationModalLabel">Регистрация</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма регистрации -->
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="fullName">ФИО</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Введите ФИО" value checked>
+                        <div class="invalid-feedback" id="fullNameError"></div> <!-- Сообщение об ошибке -->
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" placeholder="Введите email">
+                        <div class="invalid-feedback" id="registerEmailError"></div> <!-- Сообщение об ошибке -->
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <input type="password" class="form-control" id="registerPassword" placeholder="Введите пароль">
+                        <div class="invalid-feedback" id="registerPasswordError"></div> <!-- Сообщение об ошибке -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="registerBtn">Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/modal.js') }}"></script>
+<script>
+    document.getElementById('showRegistrationForm').addEventListener('click', function () {
+        // Закрытие модального окна для формы входа
+        $('#loginModal').modal('hide');
+        // Открытие модального окна для формы регистрации
+        $('#registrationModal').modal('show');
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+        const topicsList = document.querySelector('.list-group');
+
+// Получение данных о темах из API
+fetch('/api/topics')
+    .then(response => response.json())
+    .then(topics => {
+        topics.forEach(topic => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.classList.add('list-group-item', 'list-group-item-action', 'topic-btn');
+            button.textContent = topic.title;
+            button.addEventListener('click', () => showCourseContent(topic._id));
+            topicsList.appendChild(button);
+        });
+    })
+    .catch(error => console.error('Ошибка при получении данных о темах:', error));
+
+function showCourseContent(topicId) {
+    window.location.href = `/topic/${topicId}`;
+}
+</script>
+</body>
+</html>

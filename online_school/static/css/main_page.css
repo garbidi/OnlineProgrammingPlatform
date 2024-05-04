@@ -1,0 +1,125 @@
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Переопределение стилей для header */
+.custom-header {
+    background: linear-gradient(to right, #CBE095 ,#93D38D ,#E6E299);
+    background-size: 200% 200%;
+    animation: gradient 10s ease infinite;
+    padding: 17px 0;
+}
+
+.custom-header h1,
+.custom-header a {
+    font-size: 24px;
+    font-weight: 100;
+    color: #333333;
+    text-decoration: none;
+}
+
+.custom-header nav a {
+    color: #666666;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.custom-header nav a:hover {
+    color: #333333;
+}
+
+.img-fluid {
+     width: 120px;
+}
+
+/* Переопределение стилей для основного содержимого */
+.custom-content h1 {
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: 40px;
+}
+
+/* Переопределение стилей для модального окна */
+.custom-modal .modal-content {
+    border-radius: 0;
+    border: none;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.custom-modal .modal-header {
+    background-color: #f8f8f8;
+    border-bottom: none;
+}
+
+.custom-modal .modal-body {
+    padding: 40px;
+}
+
+.custom-modal .modal-footer {
+    background-color: #f8f8f8;
+    border-top: none;
+    padding: 20px 40px;
+}
+
+.custom-btn-primary {
+    background-color: transparent !important;
+    border-color: #000000 !important;
+    color: #ff6666 !important; /* Цвет текста */
+    font-family: 'Roboto', sans-serif !important; /* Пример шрифта */
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease; /* Плавная анимация при наведении */
+    font-weight: bold !important; /* Полужирный текст */
+    /* остальные стили */
+}
+
+.custom-btn-primary:hover {
+    background-color: #80c0ff;
+    border-color: #80c0ff;
+}
+
+.custom-form-control:focus {
+    border-color: #ffd8a2;
+    box-shadow: 0 0 0 0.2rem rgba(255, 216, 162, 0.25);
+}
+
+.custom-btn-link {
+    color: #ffa2a2;
+}
+
+.custom-btn-link:hover {
+    color: #ff8080;
+}
+
+.nav-menu {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.nav-menu ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.avatar-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  background-image: url('static/img/default-avatar.png');
+  background-size: cover;
+  border: none;
+  cursor: pointer;
+}
+

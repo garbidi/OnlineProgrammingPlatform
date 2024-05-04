@@ -1,0 +1,41 @@
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Переопределение стилей для header */
+.custom-header {
+    background: linear-gradient(to right, #CBE095 ,#93D38D ,#E6E299);
+    background-size: 200% 200%;
+    animation: gradient 10s ease infinite;
+    padding: 17px 0;
+}
+
+.custom-header h1,
+.custom-header a {
+    font-size: 24px;
+    font-weight: 100;
+    color: #333333;
+    text-decoration: none;
+}
+
+.custom-header nav a {
+    color: #666666;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.custom-header nav a:hover {
+    color: #333333;
+}
+
+.img-fluid {
+     width: 120px;
+}
