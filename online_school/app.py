@@ -1,18 +1,21 @@
-from flask import jsonify, render_template, request
+from flask import jsonify, render_template, request, session, abort
 from bson.objectid import ObjectId
+from werkzeug.security import generate_password_hash
+
 
 from online_school import *
 
 users_collection = db['users']
-
+topics_collection=db['topics_course_page']
 login_manager = LoginManager(app)
 
 
 class User(UserMixin):
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, added_topics=None):
         self.username = username
         self.email = email
         self.password = password
+        self.added_topics = added_topics or ''
         self._id = None  # Добавляем атрибут _id
 
     def get_id(self):
@@ -36,17 +39,23 @@ def load_user(user_id):
 def find_user_by_email(email):
     user_data = users_collection.find_one({'email': email})
     if user_data:
-        user = User(user_data['username'], user_data['email'], user_data['password'])
+        user = User(user_data['username'], user_data['email'], user_data['password'], user_data.get('added_topics', ''))
         user._id = user_data['_id']  # Устанавливаем атрибут _id
         return user
     return None
+
+def update_user_enrolled_courses(user_id, topic_id):
+    users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$addToSet": {"enrolled_courses": topic_id}}
+    )
 
 def get(user_id):
     if user_id is None:
         return None
     user_data = users_collection.find_one({'_id': ObjectId(user_id)})
     if user_data:
-        user = User(user_data['username'], user_data['email'], user_data['password'])
+        user = User(user_data['username'], user_data['email'], user_data['password'], user_data.get('added_topics', ''))
         user._id = user_data['_id']  # Устанавливаем атрибут _id
         return user
     return None
@@ -65,6 +74,7 @@ def login():
     user = find_user_by_email(email)
     if user and check_password(user, password):
         login_user(user)
+        session['user_id'] = str(user.get_id())  # Добавление user_id в сессию
         return jsonify({'success': True, 'message': 'Успешный вход'}), 200
     else:
         return jsonify({'error': 'Неверные учетные данные'}), 401
@@ -111,25 +121,34 @@ def topic_page(topic_id):
         return 'Тема не найдена'
 
 
+def validate_user_data(username, email, password):
+    if not username or not email or not password:
+        abort(400, description='Необходимо заполнить все поля')
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    validate_user_data(data['username'], data['email'], data['password'])
 
-    # Получаем значения из данных
-    username = data['username']
-    email = data['email']
-    password = data['password']
+    # Проверка наличия всех необходимых полей
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    if not username or not email or not password:
+        abort(400, description='Необходимо заполнить все поля')
 
-    # Создаем нового пользователя
-    new_user = User(username, email, password)
+    # Проверка, что пользователь с таким email ещё не зарегистрирован
+    if find_user_by_email(email):
+        return jsonify({'error': 'Пользователь с таким email уже существует'}), 400
 
-    # Добавляем пользователя в базу данных
-    db.users.insert_one(new_user.__dict__)  # Предполагается, что users - это коллекция в MongoDB
+    # Хэширование пароля
+    hashed_password = generate_password_hash(password)
+
+    # Создание нового пользователя
+    new_user = User(username, email, hashed_password)
+    new_user.save()  # Сохранение пользователя в базу данных
 
     return jsonify({'message': 'Регистрация прошла успешно!'}), 200
-
-
-
 
 @app.route('/api/topics', methods=['GET'])
 def get_topics():
@@ -146,6 +165,45 @@ def get_topics():
         topic_list.append(topic_data)
     return jsonify(topic_list)
 
+
+@app.route("/add_topic_to_user", methods=["POST"])
+def add_topic_to_user():
+    if not current_user.is_authenticated:
+        return jsonify({"success": False, "error": "Пользователь не авторизован"}), 401
+
+    # Получить название темы из запроса
+    topic_name = request.json.get("topic_name")
+
+    # Найти тему по названию
+    topic = topics_collection.find_one({"name": topic_name})
+    if not topic:
+        return jsonify({"success": False, "error": "Тема не найдена"}), 404
+
+    topic_id = topic["_id"]
+    user_id = str(current_user.id)
+
+    # Обновить документ пользователя, добавив topic_id в enrolled_courses
+    update_user_enrolled_courses(user_id, topic_id)
+
+    return jsonify({"success": True})
+
+
+@app.route('/my_course_page/<string:email>', methods=['GET'])
+def user_topics(email):
+    user = find_user_by_email(email)
+    if user:
+        added_topics = user.added_topics.split(',') if user.added_topics else []
+        topic_details = []
+        for topic_id in added_topics:
+            topic = topics_collection.find_one({'title': topic_id})
+            if topic:
+                topic_details.append({
+                    'title': topic['title'],
+                    'description': topic['description'],
+                    'duration': topic['duration']
+                })
+        return jsonify({'topics': topic_details})
+    return jsonify({'topics': []})
 
 if __name__ == '__main__':
     app.run(debug=True)

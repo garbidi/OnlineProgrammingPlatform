@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Добавленные темы</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="topic-details"></div>
+
+    <script>
+        $(document).ready(function() {
+            const userEmail = 'isckan2015@gmail.com';
+            const topicDetailsDiv = $('#topic-details'); // Объявление topicDetailsDiv вынесено за пределы функций
+
+            $.ajax({
+                url: `/my_course_page/${userEmail}`,
+                type: 'GET',
+                success: function(data) {
+                    if (data.topics.length === 0) {
+                        topicDetailsDiv.html('<p>Нет добавленных тем.</p>');
+                    } else {
+                        let topicDetailsHTML = '';
+                        for (let i = 0; i < data.topics.length; i++) {
+                            const topic = data.topics[i];
+                            topicDetailsHTML += `
+                                <div>
+                                    <h2>${topic.title}</h2>
+                                    <p>${topic.description}</p>
+                                    <p>Продолжительность: ${topic.duration}</p>
+                                </div>
+                            `;
+                        }
+                        topicDetailsDiv.html(topicDetailsHTML);
+                    }
+                },
+                error: function() {
+                    topicDetailsDiv.html('<p>Произошла ошибка при получении данных.</p>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

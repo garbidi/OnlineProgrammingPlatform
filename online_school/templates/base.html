@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ topic.title }}</title>
+    <title>Title</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_page.css') }}">
     <style>
@@ -33,31 +32,13 @@
             color: #000000 !important;
         }
 
-
-
-
     </style>
 </head>
 <body>
 {% include 'header.html' %}
-<div class="container">
-    <h1 class="mt-4 mb-4">{{ topic.title }}</h1>
-    <div class="course-info">
-        <p><strong>Описание:</strong> {{ topic.description }}</p>
-        <p><strong>Содержание:</strong></p>
-        <ul>
-            {% for item in topic.content %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-        <p><strong>Время прохождения:</strong> {{ topic.duration }}</p>
-        <button type="button" class="btn btn-primary" id="startCourseBtn" data-topic-id="{{ topic._id }}">Начать изучение</button>
 
-    </div>
-    <a href="{{ url_for('list_of_topic') }}" class="btn btn-secondary">К списку тем</a>
-</div>
+{% include 'footer.html' %}
 
-<script type="text/javascript" src="{{ url_for('static', filename='scripts/add_course.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/modal.js') }}"></script>
 <script>
     document.getElementById('showRegistrationForm').addEventListener('click', function () {
@@ -70,6 +51,5 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 </html>
