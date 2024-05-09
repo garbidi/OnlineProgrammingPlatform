@@ -3,41 +3,129 @@
 <head>
     <title>Добавленные темы</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #header {
+            background-color: #333;
+            color: white;
+            padding: 0px;
+            text-align: center;
+        }
+
+        #content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+      .topic {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 15px;
+            width: 30%;
+        }
+
+      .topic h2 {
+            margin: 0;
+        }
+
+      .topic p {
+            margin: 10px 0;
+        }
+
+        #topic-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 20px;
+            margin-top: 20px; /* add margin to separate from button */
+        }
+
+        #topic-details div {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+      .sign-button {
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative; /* add position relative to make z-index work */
+            z-index: 1; /* make button on top of dynamically loaded content */
+        }
+
+      .sign-button:hover {
+            background-color: #ddd;
+        }
+
+    </style>
 </head>
 <body>
     <div id="topic-details"></div>
 
-    <script>
+<script>
         $(document).ready(function() {
-            const userEmail = 'isckan2015@gmail.com';
-            const topicDetailsDiv = $('#topic-details'); // Объявление topicDetailsDiv вынесено за пределы функций
+            const topicDetailsDiv = $('#topic-details');
 
             $.ajax({
-                url: `/my_course_page/${userEmail}`,
+                url: '/get_user_email',
                 type: 'GET',
                 success: function(data) {
-                    if (data.topics.length === 0) {
-                        topicDetailsDiv.html('<p>Нет добавленных тем.</p>');
+                    if (data.email) {
+                        const userEmail = data.email;
+                        fetchTopicDetails(userEmail);
                     } else {
-                        let topicDetailsHTML = '';
-                        for (let i = 0; i < data.topics.length; i++) {
-                            const topic = data.topics[i];
-                            topicDetailsHTML += `
-                                <div>
-                                    <h2>${topic.title}</h2>
-                                    <p>${topic.description}</p>
-                                    <p>Продолжительность: ${topic.duration}</p>
-                                </div>
-                            `;
-                        }
-                        topicDetailsDiv.html(topicDetailsHTML);
+                        console.error('Ошибка:', data.error);
                     }
                 },
                 error: function() {
-                    topicDetailsDiv.html('<p>Произошла ошибка при получении данных.</p>');
+                    console.error('Ошибка при получении email пользователя');
                 }
             });
+
+            function fetchTopicDetails(userEmail) {
+                $.ajax({
+                    url: `/my_course_page/${userEmail}`,
+                    type: 'GET',
+                    success: function(data) {
+                        if (data.topics.length === 0) {
+                            topicDetailsDiv.html('<p>Нет добавленных тем.</p>');
+                        } else {
+                            let topicDetailsHTML = '';
+                            for (let i = 0; i < data.topics.length; i++) {
+                                const topic = data.topics[i];
+                                topicDetailsHTML += `
+                                    <div>
+                                        <h2>${topic.title}</h2>
+                                        <p>${topic.description}</p>
+                                        <p>Продолжительность: ${topic.duration}</p>
+                                        <button class="sign-button">Перейти к курсу</button> <!-- add button to each topic -->
+                                    </div>
+                                `;
+                            }
+                            topicDetailsDiv.html(topicDetailsHTML);
+                        }
+                    },
+                    error: function() {
+                        topicDetailsDiv.html('<p>Произошла ошибка при получении данных.</p>');
+                    }
+                });
+            }
         });
-    </script>
+
+</script>
 </body>
 </html>

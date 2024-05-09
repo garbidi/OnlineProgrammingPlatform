@@ -75,6 +75,7 @@ def login():
     if user and check_password(user, password):
         login_user(user)
         session['user_id'] = str(user.get_id())  # Добавление user_id в сессию
+        session['user_email'] = user.email
         return jsonify({'success': True, 'message': 'Успешный вход'}), 200
     else:
         return jsonify({'error': 'Неверные учетные данные'}), 401
@@ -165,6 +166,13 @@ def get_topics():
         topic_list.append(topic_data)
     return jsonify(topic_list)
 
+@app.route('/get_user_email', methods=['GET'])
+def get_user_email():
+    user_email = session.get('user_email')
+    if user_email:
+        return jsonify({'email': user_email}), 200
+    else:
+        return jsonify({'error': 'Email пользователя не найден в сессии'}), 404
 
 @app.route("/add_topic_to_user", methods=["POST"])
 def add_topic_to_user():
