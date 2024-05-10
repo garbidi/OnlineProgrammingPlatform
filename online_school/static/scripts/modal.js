@@ -109,6 +109,7 @@ function logout() {
         if (data.success) {
             updateAuthContainer();
             $('#userModal').modal('hide');
+            window.location.href = '/';
         } else {
             alert(data.error);
         }

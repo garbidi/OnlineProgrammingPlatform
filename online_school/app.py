@@ -101,7 +101,7 @@ def index():
         username = ''
     else:
         username = current_user.email
-    return render_template('index.html', username=username)
+    return render_template('test_html.html', username=username)
 
 
 @app.route('/list_of_topic')
