@@ -1,140 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <title>Демонстрация частиц</title>
     <style>
-        #canvasContainer {
-            width: 100%;
-            height: 100vh; /* vh - относительная единица измерения, означающая высоту viewport */
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
         }
     </style>
 </head>
 <body>
-<div id="canvasContainer"></div>
+<canvas id="canvas"></canvas>
 <script>
-const symbolPositions = {
-  'A': [
-    [3, 1], [4, 1], [5, 1], [6, 1], [7, 1],
-    [2, 2], [8, 2],
-    [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3],
-    [2, 4], [8, 4],
-    [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [8, 5]
-  ],
-  // Добавьте позиции для других символов
-};
+    window.onload = function() {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
 
-const canvasContainer = document.getElementById('canvasContainer');
-let isMousePressed = false;
-let particles = [];
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-function setup() {
-  const canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
-  canvas.parent(canvasContainer);
+        let prevMouseX = null;
+        let prevMouseY = null;
+        let mouseSpeed = 0;
 
-  const symbol = 'A';
-  const symbolPositionsForSymbol = symbolPositions[symbol];
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 50 // Радиус взаимодействия с частицами
+        };
 
-  for (const [x, y] of symbolPositionsForSymbol) {
-    const particleGroup = createParticleGroup(x * 20, y * 20); // Масштабируем позиции частиц
-    particles = particles.concat(particleGroup);
-  }
+        canvas.addEventListener('mousemove', function(event) {
+            if (prevMouseX !== null && prevMouseY !== null) {
+                const dx = event.x - prevMouseX;
+                const dy = event.y - prevMouseY;
+                mouseSpeed = Math.sqrt(dx * dx + dy * dy);
+            }
+            prevMouseX = event.x;
+            prevMouseY = event.y;
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
 
-  // Добавляем обработчик событий для мыши
-  canvas.mousePressed(handleMousePress);
-  canvas.mouseReleased(handleMouseRelease);
-}
+        const textProperties = {
+            text: '⚡EDULINE',
+            size: 100,
+            x: canvas.width / 2,
+            y: canvas.height / 2
 
-function handleMousePress() {
-  isMousePressed = true;
-}
+        };
 
-function handleMouseRelease() {
-  isMousePressed = false;
-}
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = 1;
+                this.baseX = x; // Начальная позиция по X
+                this.baseY = y; // Начальная позиция по Y
+                this.density = (Math.random() * 30) + 1;
+                this.speedX = 0; // Начальная скорость по X
+                this.speedY = 0; // Начальная скорость по Y
+                this.friction = 0.95; // Коэффициент торможения (0 < friction < 1)
+            }
 
-function draw() {
-  background(0);
-  for (const particle of particles) {
-    particle.updatePosition();
-    particle.display();
-  }
-}
+            draw() {
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
 
-function createParticleGroup(x, y) {
-  const particleGroup = [];
-  const numParticles = 100; // Количество мелких точек для каждой позиции
+            update() {
+                let dx = this.x - mouse.x;
+                let dy = this.y - mouse.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let maxDistance = mouse.radius;
+                let force = 0;
 
-  for (let i = 0; i < numParticles; i++) {
-    const offsetX = random(-5, 5);
-    const offsetY = random(-5, 5);
-    particleGroup.push(new Particle(x + offsetX, y + offsetY));
-  }
+                // Добавляем эффект дребезжания
+                let jitterStrength = 0.3; // Сила дребезжания, можно настроить
+                this.x += (Math.random() - 0.5) * jitterStrength;
+                this.y += (Math.random() - 0.5) * jitterStrength;
 
-  return particleGroup;
-}
+                if (distance < maxDistance) {
+                    force = (maxDistance - distance) / maxDistance;
+                    force *= mouseSpeed;
+                }
 
-class Particle {
-  constructor(x, y) {
-    this.pos = createVector(x, y);
-    this.originalPos = this.pos.copy(); // Сохраняем исходную позицию
-    this.vel = createVector(0, 0);
-    this.size = 2; // Уменьшаем размер точек
-  }
+                let directionX = dx / distance;
+                let directionY = dy / distance;
 
-  checkBoundaryCollision() {
-    // Проверяем столкновение с левой и правой границами
-    if (this.pos.x < 0 || this.pos.x > width) {
-      this.vel.x *= -0.1; // Инвертируем горизонтальную скорость
+                let speed = 2;
+
+                this.speedX = (this.speedX * this.friction) + (directionX * force * speed); // Применяем торможение к скорости по X
+                this.speedY = (this.speedY * this.friction) + (directionY * force * speed); // Применяем торможение к скорости по Y
+
+                this.x += this.speedX; // Используем скорость для перемещения частицы
+                this.y += this.speedY; // Используем скорость для перемещения частицы
+
+                // Возвращаем частицу к новым начальным координатам
+                if (this.x !== this.baseX) {
+                    let dx = this.x - this.baseX;
+
+                    this.x -= dx / 20; // Уменьшаем скорость возвращения
+                }
+                if (this.y !== this.baseY) {
+                    let dy = this.y - this.baseY;
+                    this.y -= dy / 20; // Уменьшаем скорость возвращения
+                }
+            }
+        }
+
+        function createParticles() {
+            ctx.fillStyle = 'black';
+            ctx.font = `${textProperties.size}px Verdana`;
+            ctx.fillText(textProperties.text, textProperties.x - ctx.measureText(textProperties.text).width / 2, textProperties.y);
+
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < canvas.width; i += 2) {
+                for (let j = 0; j < canvas.height; j += 2) {
+                    if (data[(i + j * canvas.width) * 4 + 3] > 128) {
+                        particlesArray.push(new Particle(i, j));
+                    }
+                }
+            }
+        }
+
+        let particlesArray = [];
+        createParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].draw();
+                particlesArray[i].update();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     }
-
-    // Проверяем столкновение с верхней и нижней границами
-    if (this.pos.y < 0 || this.pos.y > height) {
-      this.vel.y *= -0.1; // Инвертируем вертикальную скорость
-    }
-  }
-
-  updatePosition() {
-    if (isMousePressed) {
-    // Вычисляем вектор направления от курсора мыши
-    const directionFromMouse = createVector(this.pos.x - mouseX, this.pos.y - mouseY);
-    directionFromMouse.normalize(); // Нормализуем вектор для получения единичного вектора
-
-    // Применяем силу отталкивания от курсора
-    const repulsionForce = directionFromMouse.copy().mult(0.05); // Уменьшаем силу отталкивания
-    this.vel.add(repulsionForce);
-  } else {
-    // Если мышь не нажата, возвращаем частицу в исходное положение
-    const directionToOriginal = p5.Vector.sub(this.originalPos, this.pos);
-    directionToOriginal.normalize();
-
-    // Уменьшаем скорость возврата при приближении к исходной позиции
-    const distanceToOriginal = this.pos.dist(this.originalPos);
-
-    const maxDistance = 50; // Максимальное расстояние, на котором скорость уменьшается
-    const returnForce = directionToOriginal.copy().mult(map(distanceToOriginal, 0, maxDistance, 0.01, 0.1)); // Уменьшили значение максимальной силы
-
-    this.vel.add(returnForce);
-
-    // Добавляем трение, чтобы частицы замедлялись при приближении к исходной позиции
-    const frictionCoefficient = 0.97; // Коэффициент трения (значение между 0 и 1)
-    this.vel.mult(frictionCoefficient);
-  }
-
-    // Обновляем позицию частицы
-    this.pos.add(this.vel);
-
-    // Проверяем столкновение с границами
-    this.checkBoundaryCollision();
-  }
-
-  display() {
-    noStroke();
-    fill(255);
-    ellipse(this.pos.x, this.pos.y, this.size, this.size);
-  }
-}
 </script>
 </body>
 </html>
