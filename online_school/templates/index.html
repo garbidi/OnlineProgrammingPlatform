@@ -4,34 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online School</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_page.css') }}">
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+<!--    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_page.css') }}">-->
     <style>
         button[type="button"] {
-            background-color: transparent;
-            border-color: #000000;
-            color: #000000;
-            font-family: 'Roboto', sans-serif;
-            font-weight: bold;
-        }
+    outline: none !important;
+    background-color: transparent;
+    border-color: #000000;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+}
 
-        button[type="button"]:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
+button[type="button"]:hover {
+    outline: none !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
 
-        button[type="button"]:focus,
-        button[type="button"]:active {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border-color: #ffffff;
-            box-shadow: none !important;
-        }
+button[type="button"]:focus,
+button[type="button"]:active {
+    outline: none;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff;
+    box-shadow: none !important;
+}
 
-        button[type="button"]:not(:focus):not(:active) {
-            background-color: transparent !important;
-            color: #000000 !important;
-        }
+button[type="button"]:not(:focus):not(:active):not(:hover) {
+    text-decoration: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #000000 !important;
+}
+
+button[type="button"] {
+    outline: none !important;
+    background-color: transparent;
+    border-color: #000000;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
 
     </style>
 </head>
@@ -124,6 +146,7 @@
         // Открытие модального окна для формы регистрации
         $('#registrationModal').modal('show');
     });
+
 </script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

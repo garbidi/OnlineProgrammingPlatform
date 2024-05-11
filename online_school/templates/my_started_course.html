@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой запущенный курс</title>
+</head>
+<body>
+    <h1>{{ topic.title }}</h1>
+    <p>{{ topic.description }}</p>
+    <p>Продолжительность: {{ topic.duration }}</p>
+
+    <h2>Уроки:</h2>
+    <ul>
+        <li>
+            {% for material in materials %}
+            <div>
+                <h4>{{ material.title }}</h4>
+                {% if material.type == 'text' %}
+                <p>{{ material.content }}</p>
+                {% elif material.type == 'video' %}
+                <video src="{{ material.url }}" controls></video>
+                {% elif material.type == 'pdf' %}
+                <a href="{{ material.url }}" target="_blank">Открыть PDF</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </li>
+    </ul>
+</body>
+</html>

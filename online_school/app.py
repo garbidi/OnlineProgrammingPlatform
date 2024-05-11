@@ -1,5 +1,6 @@
-from flask import jsonify, render_template, request, session, abort
+from flask import jsonify, render_template, request, session, abort, redirect, url_for
 from bson.objectid import ObjectId
+import re
 from werkzeug.security import generate_password_hash
 
 
@@ -7,6 +8,7 @@ from online_school import *
 
 users_collection = db['users']
 topics_collection=db['topics_course_page']
+lessons = db['lessons']
 login_manager = LoginManager(app)
 
 
@@ -101,7 +103,7 @@ def index():
         username = ''
     else:
         username = current_user.email
-    return render_template('test_html.html', username=username)
+    return render_template('index.html', username=username)
 
 
 @app.route('/list_of_topic')
@@ -112,6 +114,28 @@ def list_of_topic():
 @app.route('/my-course-page')
 def my_course_page():
     return render_template('my_course_page.html')
+
+
+@app.route('/my_started_course')
+def my_started_course():
+
+
+    topic_id = request.args.get('topic_id')
+    if not topic_id:
+        return "Ошибка: topic_id не указан", 400
+
+    main = topics_collection.find_one({'_id': ObjectId(str(topic_id))})
+
+    # Поиск документа в коллекции lessons, где topic_id совпадает с регулярным выражением
+    topic_doc = db.lessons.find_one({'topic_id': f'ObjectId("{topic_id}")'})
+
+    if not topic_doc:
+        return "Ошибка: контента нет пока что. Ждите", 404
+
+    lessons = list(topic_doc['materials'])
+
+    return render_template('my_started_course.html', topic=main, materials=topic_doc['materials'])
+
 
 @app.route('/topic/<topic_id>')
 def topic_page(topic_id):
@@ -206,10 +230,12 @@ def user_topics(email):
             topic = topics_collection.find_one({'title': topic_id})
             if topic:
                 topic_details.append({
+                    '_id': str(topic['_id']),  # Преобразование ObjectId в строку
                     'title': topic['title'],
                     'description': topic['description'],
                     'duration': topic['duration']
                 })
+        print(topic_details)
         return jsonify({'topics': topic_details})
     return jsonify({'topics': []})
 

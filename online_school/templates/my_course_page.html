@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Добавленные темы</title>
+    <title>Моё обучение</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
@@ -87,53 +87,61 @@
 </script>
 <script>
         $(document).ready(function() {
-            const topicDetailsDiv = $('#topic-details');
+    const topicDetailsDiv = $('#topic-details');
 
-            $.ajax({
-                url: '/get_user_email',
-                type: 'GET',
-                success: function(data) {
-                    if (data.email) {
-                        const userEmail = data.email;
-                        fetchTopicDetails(userEmail);
-                    } else {
-                        console.error('Ошибка:', data.error);
+    $.ajax({
+        url: '/get_user_email',
+        type: 'GET',
+        success: function(data) {
+            if (data.email) {
+                const userEmail = data.email;
+                fetchTopicDetails(userEmail);
+            } else {
+                console.error('Ошибка:', data.error);
+            }
+        },
+        error: function() {
+            console.error('Ошибка при получении email пользователя');
+        }
+    });
+
+    function fetchTopicDetails(userEmail) {
+        $.ajax({
+            url: `/my_course_page/${userEmail}`,
+            type: 'GET',
+            success: function(data) {
+                if (data.topics.length === 0) {
+                    topicDetailsDiv.html('<p>Нет добавленных тем.</p>');
+                } else {
+                    let topicDetailsHTML = '';
+                    for (let i = 0; i < data.topics.length; i++) {
+                        const topic = data.topics[i];
+                        topicDetailsHTML += `
+                            <div>
+                                <h2>${topic.title}</h2>
+                                <p>${topic.description}</p>
+                                <p>Продолжительность: ${topic.duration}</p>
+                                <button class="sign-button" data-topic-id="${topic._id}">Перейти к курсу</button>
+                            </div>
+                        `;
                     }
-                },
-                error: function() {
-                    console.error('Ошибка при получении email пользователя');
+                    topicDetailsDiv.html(topicDetailsHTML);
+
+                    // Добавление обработчика события клика для кнопок "Перейти к курсу"
+                    topicDetailsDiv.find('.sign-button').click(function() {
+                        const topicId = $(this).data('topic-id');
+                        window.location.href = `/my_started_course?topic_id=${topicId}`;
+                    });
                 }
-            });
+            },
+            error: function() {
 
-            function fetchTopicDetails(userEmail) {
-                $.ajax({
-                    url: `/my_course_page/${userEmail}`,
-                    type: 'GET',
-                    success: function(data) {
-                        if (data.topics.length === 0) {
-                            topicDetailsDiv.html('<p>Нет добавленных тем.</p>');
-                        } else {
-                            let topicDetailsHTML = '';
-                            for (let i = 0; i < data.topics.length; i++) {
-                                const topic = data.topics[i];
-                                topicDetailsHTML += `
-                                    <div>
-                                        <h2>${topic.title}</h2>
-                                        <p>${topic.description}</p>
-                                        <p>Продолжительность: ${topic.duration}</p>
-                                        <button class="sign-button">Перейти к курсу</button> <!-- add button to each topic -->
-                                    </div>
-                                `;
-                            }
-                            topicDetailsDiv.html(topicDetailsHTML);
-                        }
-                    },
-                    error: function() {
-                        topicDetailsDiv.html('<p>Произошла ошибка при получении данных.</p>');
-                    }
-                });
+                topicDetailsDiv.html('<p>Произошла ошибка при получении данных.</p>');
             }
         });
+    }
+});
+
 
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
