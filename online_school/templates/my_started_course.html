@@ -4,12 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой запущенный курс</title>
+    <style>
+        /* Add some basic styling to the navigation block and buttons */
+        #nav-block {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #nav-block button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #nav-block button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
 </head>
 <body>
+{% include 'header.html' %}
     <h1>{{ topic.title }}</h1>
     <p>{{ topic.description }}</p>
     <p>Продолжительность: {{ topic.duration }}</p>
-
+    <div id="nav-block"></div>
     <h2>Уроки:</h2>
     <ul>
         <li>
@@ -27,5 +55,23 @@
             {% endfor %}
         </li>
     </ul>
+<script>
+        // Get the navigation block container
+        const navBlock = document.getElementById("nav-block");
+
+        // Create an array of button objects with text and click handlers
+        const buttons = Array.from({ length: 5 }, (_, index) => ({
+            text: `Button ${index + 1}`,
+            onClick: () => console.log(`Button ${index + 1} clicked`)
+        }));
+
+        // Create and append buttons to the nav block
+        buttons.forEach(({ text, onClick }) => {
+            const button = document.createElement("button");
+            button.textContent = text;
+            button.addEventListener("click", onClick);
+            navBlock.appendChild(button);
+        });
+    </script>
 </body>
 </html>

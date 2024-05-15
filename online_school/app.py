@@ -103,7 +103,7 @@ def index():
         username = ''
     else:
         username = current_user.email
-    return render_template('index.html', username=username)
+    return render_template('Code_editior.html', username=username)
 
 
 @app.route('/list_of_topic')
@@ -118,8 +118,6 @@ def my_course_page():
 
 @app.route('/my_started_course')
 def my_started_course():
-
-
     topic_id = request.args.get('topic_id')
     if not topic_id:
         return "Ошибка: topic_id не указан", 400
@@ -235,7 +233,6 @@ def user_topics(email):
                     'description': topic['description'],
                     'duration': topic['duration']
                 })
-        print(topic_details)
         return jsonify({'topics': topic_details})
     return jsonify({'topics': []})
 
