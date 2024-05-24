@@ -1,6 +1,6 @@
 from flask import jsonify, render_template, request, session, abort, redirect, url_for
 from bson.objectid import ObjectId
-import re
+from random import randint
 from werkzeug.security import generate_password_hash
 
 
@@ -9,6 +9,7 @@ from online_school import *
 users_collection = db['users']
 topics_collection=db['topics_course_page']
 lessons = db['lessons']
+templates = db['templates']
 login_manager = LoginManager(app)
 
 
@@ -103,7 +104,7 @@ def index():
         username = ''
     else:
         username = current_user.email
-    return render_template('Code_editior.html', username=username)
+    return render_template('index.html', username=username)
 
 
 @app.route('/list_of_topic')
@@ -119,18 +120,37 @@ def my_course_page():
 @app.route('/my_started_course')
 def my_started_course():
     topic_id = request.args.get('topic_id')
+
     if not topic_id:
         return "Ошибка: topic_id не указан", 400
 
     main = topics_collection.find_one({'_id': ObjectId(str(topic_id))})
 
-    # Поиск документа в коллекции lessons, где topic_id совпадает с регулярным выражением
     topic_doc = db.lessons.find_one({'topic_id': f'ObjectId("{topic_id}")'})
-
+    lesson_id = topic_doc['_id']
+    print(lesson_id)
+    print(topic_id)
     if not topic_doc:
         return "Ошибка: контента нет пока что. Ждите", 404
 
-    lessons = list(topic_doc['materials'])
+    template = db.templates.aggregate([
+        {"$match": {
+            "lesson_id": lesson_id,
+            "topic_id": ObjectId(topic_id),
+            # "type": "numbers",
+            # "difficult": "1"
+        }},
+        {"$sample": {"size": 1}}
+    ]).next()
+
+    variables = {}
+    for i in range(1, 5):
+        var_name = f"num{i}"
+        if var_name in template["content"]:
+            variables[var_name] = randint(10, 100)
+
+    content = template["content"].format(**variables)
+    print(content)
 
     return render_template('my_started_course.html', topic=main, materials=topic_doc['materials'])
 
