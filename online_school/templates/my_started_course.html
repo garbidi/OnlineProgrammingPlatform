@@ -38,12 +38,28 @@
     <p>{{ topic.description }}</p>
     <p>Продолжительность: {{ topic.duration }}</p>
 <!--    <div id="nav-block"></div>-->
-    <div id="nav-block" class="pagination">
-        {{ pagination.links }}
-    </div>
-    <h2>Урок:</h2>
-    <div id="content-container"></div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if current_page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('my_started_course', topic_id=topic._id, page=current_page-1) }}">Предыдущая</a>
+            </li>
+            {% endif %}
 
+            {% for page_num in range(1, total_pages+1) %}
+            <li class="page-item {% if page_num == current_page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('my_started_course', topic_id=topic._id, page=page_num) }}">{{ page_num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if current_page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('my_started_course', topic_id=topic._id, page=current_page+1) }}">Следующая</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <h2>Урок:</h2>
     <ul>
         <li>
             {% for material in materials %}
@@ -60,24 +76,24 @@
             {% endfor %}
         </li>
     </ul>
-<!--<script>-->
+<script>
 
-<!--        // Get the navigation block container-->
-<!--        const navBlock = document.getElementById("nav-block");-->
+        // Get the navigation block container
+        const navBlock = document.getElementById("nav-block");
 
-<!--        // Create an array of button objects with text and click handlers-->
-<!--        const buttons = Array.from({ length: 5 }, (_, index) => ({-->
-<!--            text: `Button ${index + 1}`,-->
-<!--            onClick: () => console.log(`Button ${index + 1} clicked`)-->
-<!--        }));-->
+        // Create an array of button objects with text and click handlers
+        const buttons = Array.from({ length: 5 }, (_, index) => ({
+            text: `Button ${index + 1}`,
+            onClick: () => console.log(`Button ${index + 1} clicked`)
+        }));
 
-<!--        // Create and append buttons to the nav block-->
-<!--        buttons.forEach(({ text, onClick }) => {-->
-<!--            const button = document.createElement("button");-->
-<!--            button.textContent = text;-->
-<!--            button.addEventListener("click", onClick);-->
-<!--            navBlock.appendChild(button);-->
-<!--        });-->
-<!--    </script>-->
+        // Create and append buttons to the nav block
+        buttons.forEach(({ text, onClick }) => {
+            const button = document.createElement("button");
+            button.textContent = text;
+            button.addEventListener("click", onClick);
+            navBlock.appendChild(button);
+        });
+    </script>
 </body>
 </html>

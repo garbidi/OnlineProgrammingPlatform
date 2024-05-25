@@ -131,7 +131,6 @@ def my_started_course():
 
     topic_doc = db.lessons.find_one({'topic_id': f'ObjectId("{topic_id}")'})
     page_types = set(material['page_type'] for material in topic_doc['materials'])
-    print(page_types)
 
     lesson_id = topic_doc['_id']
 
@@ -140,11 +139,10 @@ def my_started_course():
 
         # Применение пагинации
     total_materials = len(topic_doc['materials'])
-    pagination = Pagination(page=page, total=total_materials, per_page=per_page)
+    total_pages = (total_materials + per_page - 1) // per_page
     start = (page - 1) * per_page
     end = start + per_page
     displayed_materials = topic_doc['materials'][start:end]
-    print(displayed_materials)
 
     template = db.templates.aggregate([
         {"$match": {
@@ -165,7 +163,8 @@ def my_started_course():
     content = template["content"].format(**variables)
     print(content)
 
-    return render_template('my_started_course.html', topic=main, materials=displayed_materials, pagination=pagination)
+    return render_template('my_started_course.html', topic=main, materials=displayed_materials, current_page=page,
+                           total_pages=total_pages)
 
 
 @app.route('/topic/<topic_id>')
