@@ -1,4 +1,5 @@
 from flask import jsonify, render_template, request, session, abort, redirect, url_for
+from flask_paginate import Pagination
 from bson.objectid import ObjectId
 from random import randint
 from werkzeug.security import generate_password_hash
@@ -120,6 +121,8 @@ def my_course_page():
 @app.route('/my_started_course')
 def my_started_course():
     topic_id = request.args.get('topic_id')
+    page = request.args.get('page', 1, type=int)
+    per_page = 1  # Количество материалов на странице
 
     if not topic_id:
         return "Ошибка: topic_id не указан", 400
@@ -127,11 +130,21 @@ def my_started_course():
     main = topics_collection.find_one({'_id': ObjectId(str(topic_id))})
 
     topic_doc = db.lessons.find_one({'topic_id': f'ObjectId("{topic_id}")'})
+    page_types = set(material['page_type'] for material in topic_doc['materials'])
+    print(page_types)
+
     lesson_id = topic_doc['_id']
-    print(lesson_id)
-    print(topic_id)
+
     if not topic_doc:
         return "Ошибка: контента нет пока что. Ждите", 404
+
+        # Применение пагинации
+    total_materials = len(topic_doc['materials'])
+    pagination = Pagination(page=page, total=total_materials, per_page=per_page)
+    start = (page - 1) * per_page
+    end = start + per_page
+    displayed_materials = topic_doc['materials'][start:end]
+    print(displayed_materials)
 
     template = db.templates.aggregate([
         {"$match": {
@@ -152,7 +165,7 @@ def my_started_course():
     content = template["content"].format(**variables)
     print(content)
 
-    return render_template('my_started_course.html', topic=main, materials=topic_doc['materials'])
+    return render_template('my_started_course.html', topic=main, materials=displayed_materials, pagination=pagination)
 
 
 @app.route('/topic/<topic_id>')
