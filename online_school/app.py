@@ -1,10 +1,7 @@
 from flask import jsonify, render_template, request, session, abort, redirect, url_for
-from flask_paginate import Pagination
-from bson.objectid import ObjectId
-from random import randint
 from werkzeug.security import generate_password_hash
 
-
+from task_generation import *
 from online_school import *
 
 users_collection = db['users']
@@ -137,35 +134,39 @@ def my_started_course():
     if not topic_doc:
         return "Ошибка: контента нет пока что. Ждите", 404
 
-        # Применение пагинации
+    # Применение пагинации
     total_materials = len(topic_doc['materials'])
     total_pages = (total_materials + per_page - 1) // per_page
     start = (page - 1) * per_page
     end = start + per_page
     displayed_materials = topic_doc['materials'][start:end]
 
-    template = db.templates.aggregate([
-        {"$match": {
-            "lesson_id": lesson_id,
-            "topic_id": ObjectId(topic_id),
-            # "type": "numbers",
-            # "difficult": "1"
-        }},
-        {"$sample": {"size": 1}}
-    ]).next()
+    current_page_type = displayed_materials[-1]['page_type']  # Предполагаем, что последний материал на странице определяет page_type
 
-    variables = {}
-    for i in range(1, 5):
-        var_name = f"num{i}"
-        if var_name in template["content"]:
-            variables[var_name] = randint(10, 100)
-
-    content = template["content"].format(**variables)
-    print(content)
+    template = get_random_template(db, lesson_id, topic_id, current_page_type)
+    if template:
+        generated_content = generate_task(template)
+    else:
+        generated_content = ""  # Если шаблон не найден, оставляем контент пустым
 
     return render_template('my_started_course.html', topic=main, materials=displayed_materials, current_page=page,
-                           total_pages=total_pages)
+                           total_pages=total_pages, generated_content=generated_content,
+                           current_page_type=current_page_type)
 
+
+@app.route('/generate_task', methods=['POST'])
+def generate_task_route():
+    topic_id = request.form.get('topic_id')
+    lesson_id = db.lessons.find_one({'topic_id': f'ObjectId("{topic_id}")'})['_id']
+    page_type = request.form.get('page_type')
+
+    template = get_random_template(db, lesson_id, topic_id, page_type)
+    if template:
+        generated_content = generate_task(template)
+    else:
+        generated_content = ""
+
+    return jsonify({'content': generated_content})
 
 @app.route('/topic/<topic_id>')
 def topic_page(topic_id):
