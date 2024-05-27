@@ -1,0 +1,272 @@
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-image: url('static/img/main_page_2.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 10px;
+        height: 100vh;
+    }
+
+
+/* HEADER: МЕНЮ */
+    nav ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+    }
+
+    nav ul .items-logo-text{
+    font-size: 3rem;
+    float: left;
+    padding-left:10px;
+    padding-right: 600px;
+    }
+
+    nav ul .items-list{
+        padding-top: 25px;
+        float: right;
+    }
+
+    nav ul .items-button{
+        padding-top: 25px;
+        padding-right: 20 px;
+        float: right;
+    }
+
+    nav ul li a {
+        color: #FDFFF4;
+        text-decoration: none;
+        float: right;
+    }
+
+    nav ul li a: hover {
+        color: #C36E5A;
+        text-decoration: none;
+        float: right;
+    }
+
+
+/* HEADER: кнопка ВОЙТИ */
+   .sign-in-btn {
+        color: #ffffff;
+        background-color: transparent;
+        border-color: #ffffff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: bold;
+        margin-right: 20px;
+    }
+
+   .sign-in-btn:focus,
+   .sign-in-btn:active {
+        background-color:  transparent !important;
+        color: #ffffff !important;
+        border-color: initial;
+        box-shadow: none !important;
+    }
+
+   .sign-in-btn:hover {
+        background-color:  transparent !important;
+        border-color: #d07f67;
+        color: #C36E5A;
+    }
+
+   .sign-in-btn:active:hover {
+        background-color:  transparent !important;
+        border-color: #d07f67;
+        color: #C36E5A;
+   }
+
+
+/* Modal window: кнопка ЗАКРЫТЬ в модальном окне входа в аккаунт */
+   .close-btn{
+        color: #ffffff;
+        background-color: #992534;
+        border-color: #992534;
+        font-weight: bold;
+   }
+
+   .close-btn:focus,
+   .close-btn:active {
+        background-color: transparent !important;
+        color: #02446d !important;
+        border-color: #02446d;
+        box-shadow: none !important;
+    }
+
+   .close-btn:hover {
+        background-color: transparent !important;
+        border-color: #02446d;
+        color: #02446d;
+    }
+
+   .close-btn:active:hover {
+        background-color: transparent !important;
+        border-color: #02446d;
+        color: #02446d;
+   }
+
+
+/* Modal window: кнопки ЗАРЕГИСТРИРОВАТЬСЯ и ВОЙТИ в модальном окне входа в аккаунт */
+   .register-btn {
+        color: #d07f67;
+        background-color: transparent;
+        border-color: #d07f67;
+        font-family: 'Roboto', sans-serif;
+        font-weight: bold;
+    }
+
+   .register-btn:focus,
+   .register-btn:active {
+        background-color:  transparent !important;
+        color: #02446d !important;
+        border-color: #02446d;
+        box-shadow: none !important;
+    }
+
+   .register-btn:hover {
+        background-color:  transparent !important;
+        border-color: #02446d;
+        color: #02446d;
+    }
+
+   .register-btn:active:hover {
+        background-color:  transparent !important;
+        border-color: #02446d;
+        color:#02446d;
+   }
+
+/* Modal window: Поля ввода данных */
+   .form-control{
+        margin-bottom: 15px;
+   }
+
+
+/* HEADER: Заголовок главной страницы */
+   #festival-header {
+        margin-top: 350px;
+        padding: 5rem 0;
+        text-align: center;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.5);
+   }
+
+   #festival-header h1 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+   }
+
+   #festival-header p {
+        font-size: 1.5rem;
+        margin: 0;
+   }
+
+
+/*BODY: Первая секция - карточки с курсами */
+    .first-section-container {
+        background-color: #d27e66;
+        border-radius: 40px;
+        padding: 30px;
+        margin: 80px 80px;
+    }
+
+    .first-section-title {
+        font-size: 2.3rem;
+        text-align: left;
+        color: #000000;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
+    .card-container{
+        display: flex;
+<!--        flex-wrap: wrap;-->
+        justify-content: space-around;  /* justify-content: space-between; */
+        margin-top: 20px;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 40px;
+        padding: 20px;
+        flex-basis: calc(33.33% - 20px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        width: 200px;
+        height: 250px;
+    }
+
+    .card h3 {
+        margin: 0;
+        padding: 0;
+        font-size: 1.5rem;
+    }
+
+    .card p {
+        margin: 5px 0;
+        padding: 0;
+    }
+
+
+/* BODY: вторая секция с информацией */
+    .second-section-container{
+        display: flex;
+        justify-content: space-around;  /* justify-content: space-between; */
+        margin-top: 20px;
+        margin: 0px 80px;
+        margin-bottom: 100px;
+    }
+
+    .figure {
+        background-color: #066399;
+        display: flex;
+        flex-direction: column;
+<!--        align-items: center;-->
+        padding: 30px;
+        border-radius: 40px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 600px;
+    }
+
+    .figure1{
+         width: 750px;
+         margin-right: 10px;
+         padding: 50px 80px;
+    }
+
+    .figure2{
+         width: 500px;
+         margin-left: 10px;
+         padding: 50px 50px;
+    }
+
+    .figure h2 {
+        margin: 0 0 10px 0;
+        font-size: 2.5rem;
+        color: #F8CB6F;
+    }
+
+    .figure p {
+         margin: 10px 30px 10px 0;
+         text-align: left;
+         color: #eee
+    }
+
+    .second-section-container img{
+        width: 500px;
+        border-radius: 150px;
+        margin-bottom: 25px;
+    }
+
+
+</style>
