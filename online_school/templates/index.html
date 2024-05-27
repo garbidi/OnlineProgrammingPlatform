@@ -1,155 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online School</title>
-<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
-<!--    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_page.css') }}">-->
-    <style>
-        button[type="button"] {
-    outline: none !important;
-    background-color: transparent;
-    border-color: #000000;
-    color: #000000;
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold;
-}
+{% extends "templates.html" %}
 
-button[type="button"]:hover {
-    outline: none !important;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-}
+{% block title %}
+Eduline
+{% endblock %}
 
-button[type="button"]:focus,
-button[type="button"]:active {
-    outline: none;
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-color: #ffffff;
-    box-shadow: none !important;
-}
+{% block head %}
+{% include 'index_page_style.html' %}
+{% endblock %}
 
-button[type="button"]:not(:focus):not(:active):not(:hover) {
-    text-decoration: none !important;
-    outline: none !important;
-    background-color: transparent !important;
-    color: #000000 !important;
-}
-
-button[type="button"] {
-    outline: none !important;
-    background-color: transparent;
-    border-color: #000000;
-    color: #000000;
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-
-
-    </style>
-</head>
-<body>
-{% include 'header.html' %}
+{% block body %}
 <!-- Основное содержимое -->
-<div class="container mt-4 custom-content">
-    <h1>Welcome to Online School</h1>
-</div>
-
-<!-- Модальное окно для формы входа -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Вход</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<section id="first-section">
+    <div class="first-section-container">
+        <h2 class="first-section-title">Направления обучения</h2>
+        <div class="card-container">
+            <div class="card">
+                <h3>Основы программирования на Python</h3>
+                <p>уровень: базовый</p>
+                <p>время обучения: 2 месяца</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
             </div>
-            <div class="modal-body">
-                <!-- Форма входа -->
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail">Email</label>
-                        <input type="email" class="form-control" id="loginEmail" placeholder="Введите email">
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">Пароль</label>
-                        <input type="password" class="form-control" id="loginPassword" placeholder="Введите пароль">
-                    </div>
-                    <div class="text-center">
-                        <!-- Кнопка для переключения на форму регистрации -->
-                        <button type="button" class="btn btn-link" id="showRegistrationForm">Зарегистрироваться</button>
-                    </div>
-                </form>
+            <div class="card">
+                <h3>Создание чат-ботов на Python</h3>
+                <p>уровень: начинающий</p>
+                <p>время обучения: 4 месяца</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Войти</button>
+            <div class="card">
+                <h3>Создание 2D-игр на Python</h3>
+                <p>уровень: начинающий</p>
+                <p>время обучения: 4 месяца</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
+            </div>
+            <div class="card">
+                <h3>Python PRO</h3>
+                <p>уровень: продолжающий</p>
+                <p>время обучения: 6 месяцев</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
+            </div>
+        </div>
+        <div class="card-container">
+            <div class="card">
+                <h3>Сложность алгоритмов</h3>
+                <p>уровень: продолжающий</p>
+                <p>время обучения: 4 месяца</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
+            </div>
+            <div class="card">
+                <h3>Создание алгоритмов на Python</h3>
+                <p>уровень: начинающий</p>
+                <p>время обучения: 4 месяца</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
+            </div>
+            <div class="card">
+                <h3>Олимпиадное программирование</h3>
+                <p>уровень: продолжающий</p>
+                <p>время обучения: 4 месяца</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
+            </div>
+            <div class="card">
+                <h3>Машинное обучение</h3>
+                <p>уровень: продолжающий</p>
+                <p>время обучения: 6 месяцев</p>
+                <p>Сертификат по окончании</p>
+                <a href="#">Подробнее</a>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Модальное окно для формы регистрации -->
-<div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registrationModalLabel">Регистрация</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Форма регистрации -->
-                <form id="registrationForm">
-                    <div class="form-group">
-                        <label for="fullName">ФИО</label>
-                        <input type="text" class="form-control" id="fullName" placeholder="Введите ФИО" value checked>
-                        <div class="invalid-feedback" id="fullNameError"></div> <!-- Сообщение об ошибке -->
-                    </div>
-                    <div class="form-group">
-                        <label for="registerEmail">Email</label>
-                        <input type="email" class="form-control" id="registerEmail" placeholder="Введите email">
-                        <div class="invalid-feedback" id="registerEmailError"></div> <!-- Сообщение об ошибке -->
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword">Пароль</label>
-                        <input type="password" class="form-control" id="registerPassword" placeholder="Введите пароль">
-                        <div class="invalid-feedback" id="registerPasswordError"></div> <!-- Сообщение об ошибке -->
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary" id="registerBtn">Зарегистрироваться</button>
-            </div>
+<section id="second-section">
+    <div class="second-section-container">
+        <div class="figure figure1">
+            <img src="static/img/main_picture2.jpg" alt="Image 1">
+            <h2>Обучение Python для любого возраста</h2>
+            <p>Поможем Вам начать программировать в любом возрасте! Обучим Python с нуля или поможем углубить уже имеющиеся знания.</p>
+        </div>
+        <div class="figure figure2">
+            <h2>Более 500 учеников</h2>
+            <p>Более 500 учащихся доверились нам, и мы помогли им продвинуться в Python!</p>
+            <h2>Более 15 курсов</h2>
+            <p>Мы предлагаем Вам попробовать изучить более 15 курсов по Python для разного уровня в программировании.</p>
+            <h2>Как проходит обучение?</h2>
+            <p>Вы можете получить материалы бесплатно, зарегистрировавшись на нашей платформе. У Вас будет постоянный доступ ко всем имеющимся материалам!</p>
         </div>
     </div>
-</div>
-
-
-<script>
-    document.getElementById('showRegistrationForm').addEventListener('click', function () {
-        // Закрытие модального окна для формы входа
-        $('#loginModal').modal('hide');
-        // Открытие модального окна для формы регистрации
-        $('#registrationModal').modal('show');
-    });
-
-</script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+</section>
+{% endblock %}
