@@ -6,10 +6,19 @@ Eduline
 
 {% block head %}
 {% include 'index_page_style.html' %}
+<style>
+    canvas {
+        display: block;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
 <!-- Основное содержимое -->
+<section id="canvas-section">
+    <canvas id="canvas"></canvas>
+</section>
+
 <section id="first-section">
     <div class="first-section-container">
         <h2 class="first-section-title">Направления обучения</h2>
@@ -94,3 +103,4 @@ Eduline
     </div>
 </section>
 {% endblock %}
+
