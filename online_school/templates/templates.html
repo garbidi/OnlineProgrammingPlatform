@@ -1,0 +1,162 @@
+
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        {% endblock%}
+    </title>
+
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    {% include 'main_styles.html' %}
+
+    {% block head %}
+    {% endblock %}
+</head>
+
+
+<body>
+<!-- Верхний хедер -->
+<header>
+    <nav>
+        <ul>
+            <li><a class='items-logo-text' href="">EDULINE</a></li>
+            <li><a class='items-list' href="/list_of_topic">Список тем</a></li>
+            <li><a class='items-list' href="#">Новости школы</a></li>
+            <div class='items-button' id="authContainer">
+                {% if current_user.is_authenticated %}
+                <button type="button" class="btn sign-in-btn" data-toggle="modal" data-target="#userModal">
+                    Welcome, {{ current_user.full_name }}
+                </button>
+                {% else %}
+                <button type="button" class="btn sign-in-btn" data-toggle="modal"
+                        data-target="#loginModal">
+                    Войти
+                </button>
+                {% endif %}
+            </div>
+        </ul>
+    </nav>
+     <section id="festival-header">
+        <h1>Всё о Python и даже больше</h1>
+        <p>Учим не только кодить!</p>
+    </section>
+</header>
+
+{% block body %}{% endblock %}
+<footer>
+    <!-- Add your footer content here -->
+</footer>
+
+
+<!-- Модальное окно для формы входа -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+                <button type="button" class="btn close-btn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма входа -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="Введите email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Введите пароль">
+                    </div>
+                    <div class="text-center">
+                        <!-- Кнопка для переключения на форму регистрации -->
+                        <button type="button" class="btn register-btn" id="showRegistrationForm">Зарегистрироваться</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn register-btn" id="loginButton">Войти</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Модальное окно для формы регистрации -->
+<div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationModalLabel">Регистрация</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма регистрации -->
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="fullName">ФИО</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Введите ФИО" value checked>
+                        <div class="invalid-feedback" id="fullNameError"></div> <!-- Сообщение об ошибке -->
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" placeholder="Введите email">
+                        <div class="invalid-feedback" id="registerEmailError"></div> <!-- Сообщение об ошибке -->
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <input type="password" class="form-control" id="registerPassword" placeholder="Введите пароль">
+                        <div class="invalid-feedback" id="registerPasswordError"></div> <!-- Сообщение об ошибке -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="registerBtn">Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Опции пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <a href="{{ url_for('my_course_page') }}" class="btn btn-primary btn-block">Моё обучение</a>
+                <button type="button" class="btn btn-secondary btn-block">Настройки профиля</button>
+                <button type="button" class="btn btn-danger btn-block" onclick="logout()">Выйти</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('showRegistrationForm').addEventListener('click', function () {
+        // Закрытие модального окна для формы входа
+        $('#loginModal').modal('hide');
+        // Открытие модального окна для формы регистрации
+        $('#registrationModal').modal('show');
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!--<script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>-->
+<script src="{{ url_for('static', filename='scripts/modal.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
