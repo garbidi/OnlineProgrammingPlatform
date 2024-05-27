@@ -11,7 +11,7 @@ const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
 	matchBrackets: true
 });
 
-editor.setValue(`sum([1, 2, 3, 4, 5])`);
+editor.setValue(`print("Hello, World!")`);
 output.value = "Initializing...\n";
 
 async function main() {
@@ -28,12 +28,27 @@ function addToOutput(s) {
 }
 
 async function evaluatePython() {
-	let pyodide = await pyodideReadyPromise;
-	try {
-		console.log(editor.getValue())
-		let output = pyodide.runPython(editor.getValue());
-		addToOutput(output);
-	} catch (err) {
-		addToOutput(err);
-	}
+  let pyodide = await pyodideReadyPromise;
+  try {
+    let output = '';
+    pyodide.runPython(`
+import sys
+from io import StringIO
+
+sys.stdout = StringIO()
+try:
+    exec('''${editor.getValue()}''')
+    output = sys.stdout.getvalue()
+except Exception as e:
+    output = str(e)
+sys.stdout = sys.__stdout__
+
+print(output)
+`);
+    output = pyodide.runPython('output');
+    addToOutput(output);
+  } catch (err) {
+    addToOutput(err);
+  }
 }
+
